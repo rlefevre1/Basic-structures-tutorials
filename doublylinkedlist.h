@@ -10,6 +10,8 @@
 //#include <cstddef>
 #include <initializer_list>
 #include <stdexcept>
+#include <type_traits>
+#include <utility>
 
 namespace manual
 {
@@ -74,6 +76,16 @@ namespace manual
                     tail_ = current;
                 }
             }
+            /*!
+             * \brief Move constructor.
+             * \param[in,out] other The DoublyLinkedList to move from
+             *
+             * \note The moved DoublyLinkedList will be left empty but still valid.
+             */
+            DoublyLinkedList(DoublyLinkedList<T> && other) noexcept : head_{std::exchange(other.head_, nullptr)},
+                                                                      tail_{std::exchange(other.tail_, nullptr)},
+                                                                      size_{std::exchange(other.size_, 0)}
+            {}
             /*!
              * \brief Initialization constructor.
              * \param[in] init_list An initializer list to copy
@@ -438,8 +450,8 @@ namespace manual
 
             // Operators
             /*!
-             * \brief Assign new contents to the container (replacing the current contents).
-             * \param other A DoublyLinkedList of the same type
+             * \brief Copy assign new contents to the container (replacing the current contents).
+             * \param other A DoublyLinkedList of the same type (to copy)
              * \return A reference to `*this`
              */
             DoublyLinkedList<T> & operator=(const DoublyLinkedList<T> & other)
@@ -469,6 +481,24 @@ namespace manual
                         }
                         tail_ = current;
                     }
+                }
+                return *this;
+            }
+            /*!
+             * \brief Move assign new contents to the container (replacing the current contents).
+             * \param[in,out] other A DoublyLinkedList of the same type (to move from)
+             * \return A reference to `*this`
+             *
+             * \note The moved DoublyLinkedList will be left empty but still valid.
+             */
+            DoublyLinkedList<T> & operator=(DoublyLinkedList<T> && other) noexcept
+            {
+                if(this != &other)
+                {
+                    clear();
+                    head_ = std::exchange(other.head_, nullptr);
+                    tail_ = std::exchange(other.tail_, nullptr);
+                    size_ = std::exchange(other.size_, 0);
                 }
                 return *this;
             }
