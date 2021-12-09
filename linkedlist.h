@@ -226,7 +226,7 @@ namespace manual
                 if(index >= size_)
                     throw std::out_of_range(std::string("[Out of range error] - manual::LinkedList::at() - (index: ") + std::to_string(index) + ", size: " + std::to_string(size_) + ").");
 
-                return const_cast<const LinkedList<T> &>(*this)[index];
+                return (*this)[index];
             }
             /*!
              * \brief Safely access to an element by index.
